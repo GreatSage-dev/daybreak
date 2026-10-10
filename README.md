@@ -1,9 +1,12 @@
 # ☀️ DAYBREAK: The Price Trust Engine for Tokenized US Equities
 
 [![Bitget AI Hackathon S2](https://img.shields.io/badge/Bitget%20AI%20Hackathon-Season%202%20Track%202-E8A23A?style=for-the-badge)](https://www.bitget.com/activity-hub/hackathon)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-daybreak--up.vercel.app-E8A23A?style=for-the-badge&logo=vercel)](https://daybreak-up.vercel.app)
 [![Tests Passing](https://img.shields.io/badge/Vitest-19%2F19%20Passing-34D399?style=for-the-badge)](https://vitest.dev)
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-Strict%20NodeNext-blue?style=for-the-badge)](https://www.typescriptlang.org)
 [![Bitget V2 Testnet](https://img.shields.io/badge/Bitget%20API-V2%20Demo%20Trading-FF6B2C?style=for-the-badge)](https://api.bitget.com)
+
+**Live Web Application:** [https://daybreak-up.vercel.app](https://daybreak-up.vercel.app) | **Live Console:** [https://daybreak-up.vercel.app/console](https://daybreak-up.vercel.app/console)
 
 > *"Every trading bot on Bitget trades the price. None of them ask: is the price trustworthy?"*
 

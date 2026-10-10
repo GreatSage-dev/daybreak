@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "DAYBREAK: The Dark-Hours Price Trust Engine & Autonomous Agent Stack",
   "type": "module",
-  "main": "dist/server.js",
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",

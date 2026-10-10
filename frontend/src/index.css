@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #0A0604;
+  --color-surface-raised: #120E0A;
+  --color-surface-hover: #1A1410;
+  --color-accent: #E8A23A;
+  --color-accent-copper: #C77B30;
+  --color-accent-rust: #9A5524;
+  --color-accent-ember: #FF6B2C;
+  --color-trust-a: #34D399;
+  --color-trust-b: #60A5FA;
+  --color-trust-c: #FBBF24;
+  --color-trust-d: #F97316;
+  --color-trust-f: #EF4444;
+  --color-ink: #F5F0EB;
+  --color-ink-secondary: #A39585;
+  --color-ink-muted: #6B5D50;
+  --color-edge: #2A2118;
+  --color-edge-glow: #3D2E1F;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-surface);
+}
+
+body {
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(232, 162, 58, 0.3);
+  color: #F5F0EB;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-edge); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+.text-gradient {
+  background: linear-gradient(135deg, #E8A23A 0%, #FF6B2C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-amber {
+  box-shadow: 0 0 60px rgba(232, 162, 58, 0.12), 0 0 120px rgba(232, 162, 58, 0.04);
+}
+
+.glow-ember {
+  box-shadow: 0 0 40px rgba(255, 107, 44, 0.15), 0 0 80px rgba(255, 107, 44, 0.05);
+}
+
+.card-gradient-border {
+  background: linear-gradient(var(--color-surface-raised), var(--color-surface-raised)) padding-box,
+              linear-gradient(135deg, rgba(232, 162, 58, 0.4), rgba(154, 85, 36, 0.2), rgba(42, 33, 24, 0.6)) border-box;
+  border: 1px solid transparent;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.animate-count-up { animation: count-up 0.8s ease-out forwards; }

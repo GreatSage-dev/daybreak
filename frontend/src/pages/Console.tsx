@@ -878,11 +878,15 @@ export default function Console() {
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-trust-a animate-pulse" />
             <span className="text-xs font-mono font-semibold text-trust-a tracking-wider uppercase">
-              Live Market Telemetry
+              Live Telemetry & SEC Verification
             </span>
             <span className="text-ink-muted text-xs">•</span>
             <span className="text-xs text-ink-secondary">
-              Feeds: <span className="text-ink font-mono">Institutional US Equities + Crypto</span>
+              EDGAR: <span className="text-trust-a font-mono">data.sec.gov (Live)</span>
+            </span>
+            <span className="text-ink-muted text-xs">•</span>
+            <span className="text-xs text-ink-secondary">
+              Receipts: <span className="text-accent font-mono">Ed25519 Signed</span>
             </span>
           </div>
           <div className="flex items-center gap-4 text-xs font-mono">

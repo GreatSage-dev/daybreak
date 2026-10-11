@@ -5,6 +5,7 @@ import {
   TokenMarketData,
   TrustEvaluation,
 } from '../types/index.js';
+import { signRefusalReceipt } from '../engine/crypto-receipt.js';
 
 export interface PolicyGateParams {
   symbol: string;
@@ -174,6 +175,8 @@ export class DaybreakPolicyGate {
       estimatedCapitalPreservedUsd,
     };
 
+    const signedReceipt = signRefusalReceipt(receipt);
+
     return {
       allowed: false,
       action: 'REFUSE',
@@ -182,7 +185,7 @@ export class DaybreakPolicyGate {
       mondayRiskProtectionUsd: estimatedCapitalPreservedUsd,
       triggeredForbiddenState: forbiddenState,
       reason: rejectionReason,
-      refusalReceipt: receipt,
+      refusalReceipt: signedReceipt,
     };
   }
 }

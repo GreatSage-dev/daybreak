@@ -205,9 +205,36 @@ export interface EvaluateEventRequest {
   sentiment?: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
   rawUrgency?: number;
   hasOfficialFiling?: boolean;
+  verifyWithSecEdgar?: boolean;
   baseSizeUsd?: number;
   deltaHours?: number;
   mondayOpenPrice?: number;
+}
+
+export interface SecFilingsResponse {
+  symbol: string;
+  underlying: string;
+  cik: string;
+  hasRecent8K: boolean;
+  recentFilingsCount: number;
+  latest8KFiling?: {
+    accessionNumber: string;
+    filingDate: string;
+    reportDate: string;
+    form: string;
+    primaryDocument: string;
+  };
+  latestFilingDate?: string;
+  dataSource: string;
+  checkedAt: string;
+}
+
+export interface VerifyReceiptResponse {
+  valid: boolean;
+  algorithm: string;
+  verifiedAt: string;
+  authorityPublicKey?: string;
+  error?: string;
 }
 
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
@@ -221,6 +248,7 @@ export const api = {
   systemStatus: () => request<SystemStatusResponse>('/system-status'),
   tokens: () => request<TokensResponse>('/tokens'),
   scenarios: () => request<ScenariosResponse>('/scenarios'),
+  secFilings: (symbol: string) => request<SecFilingsResponse>(`/sec-filings/${symbol}`),
   trustCurve: (symbol: string) => request<TrustCurveResponse>(`/trust-curve/${symbol}`),
   simulate: (options?: { dataset?: 'benchmark' | 'extended' }) =>
     request<SimulationResult>('/simulate', {
@@ -233,6 +261,12 @@ export const api = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(eventReq),
+    }),
+  verifyReceipt: (receipt: unknown) =>
+    request<VerifyReceiptResponse>('/verify-receipt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ receipt }),
     }),
   paperLog: () => request<PaperLogResponse>('/paper-log'),
 };

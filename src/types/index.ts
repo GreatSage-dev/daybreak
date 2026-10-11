@@ -83,6 +83,11 @@ export interface RefusalReceipt {
   rejectionReason: string;
   estimatedMondayReversionBps: number;
   estimatedCapitalPreservedUsd: number;
+  sha256Hash?: string;
+  signature?: string;
+  authorityPublicKey?: string;
+  algorithm?: string;
+  signedAt?: string;
 }
 
 export interface AgentDecision {

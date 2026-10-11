@@ -32,7 +32,8 @@ To ensure total transparency for hackathon evaluation:
 | **Bitget V2 Demo Client** | **Functional Adapter** | HMAC-SHA256 authenticated REST client targeting `api.bitget.com` with `papertrading: 1` (`src/adapters/bitget-testnet.ts`) |
 | **Bitget MCP & Signals** | **Adapter Layer** | Interfaces with Bitget stock MCP schema and signal formats, with offline fixture fallback (`src/adapters/bitget-mcp.ts`) |
 | **Weekend Market Shocks** | **Authored Scenarios** | 18 continuous weekend stress scenarios spanning Friday close to Monday open, plus interactive sandbox shock injector (`src/agent/simulation-runner.ts`) |
-| **SEC 8-K Regulatory Check** | **Prototype Metadata** | Evaluates `hasFiling` / `secFilingVerified` flags on event payloads (live SEC EDGAR scraping is on the post-hackathon roadmap) |
+| **SEC 8-K Regulatory Check** | **Live SEC EDGAR API** | Direct real-time queries to US SEC public REST API (`data.sec.gov`) for authentic CIK filings (`src/adapters/sec-edgar.ts`) |
+| **Refusal Receipts** | **Cryptographic Attestation** | Ed25519-SHA256 digital signatures with in-app public key verification (`src/engine/crypto-receipt.ts`) |
 
 ---
 

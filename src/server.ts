@@ -12,6 +12,8 @@ import {
   EXTENDED_WEEKEND_SCENARIOS,
   SimulationEventConfig,
 } from './agent/simulation-runner.js';
+import { SecEdgarAdapter } from './adapters/sec-edgar.js';
+import { verifyRefusalReceipt } from './engine/crypto-receipt.js';
 import { PaperLogEntry } from './types/index.js';
 
 export function buildServer() {
@@ -19,6 +21,7 @@ export function buildServer() {
   const mcpAdapter = new BitgetMcpAdapter({ forceOfflineFixtures: true });
   const signalAdapter = new BitgetSignalAdapter();
   const testnetClient = new BitgetTestnetClient();
+  const secEdgarAdapter = new SecEdgarAdapter();
   const simulationRunner = new SimulationRunner(mcpAdapter, signalAdapter);
 
   // Global in-memory paper log store
@@ -218,6 +221,27 @@ export function buildServer() {
     };
   });
 
+  // GET /api/sec-filings/:symbol (Live SEC EDGAR real-time 8-K query)
+  server.get<{ Params: { symbol: string } }>('/api/sec-filings/:symbol', async (req) => {
+    const symbol = req.params.symbol;
+    return secEdgarAdapter.checkRecent8K(symbol);
+  });
+
+  // POST /api/verify-receipt (Cryptographic verification of Refusal Receipt signatures)
+  server.post<{ Body: { receipt: any } }>('/api/verify-receipt', async (req) => {
+    const receipt = req.body?.receipt;
+    if (!receipt) {
+      return { valid: false, error: 'No receipt payload provided' };
+    }
+    const valid = verifyRefusalReceipt(receipt);
+    return {
+      valid,
+      algorithm: receipt.algorithm || 'Ed25519-SHA256',
+      verifiedAt: new Date().toISOString(),
+      authorityPublicKey: receipt.authorityPublicKey,
+    };
+  });
+
   // POST /api/evaluate-event (Interactive Shock Injector Sandbox Endpoint)
   server.post<{
     Body: {
@@ -226,6 +250,7 @@ export function buildServer() {
       sentiment?: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
       rawUrgency?: number;
       hasOfficialFiling?: boolean;
+      verifyWithSecEdgar?: boolean;
       baseSizeUsd?: number;
       deltaHours?: number;
       mondayOpenPrice?: number;
@@ -237,6 +262,14 @@ export function buildServer() {
     const referenceTime = Date.UTC(2026, 9, 9, 20, 0, 0) + deltaHours * 3600 * 1000;
     const baseSizeUsd = b.baseSizeUsd ?? 10_000;
 
+    let hasOfficialFiling = b.hasOfficialFiling ?? false;
+    let secEdgarAudit: any = null;
+
+    if (b.verifyWithSecEdgar) {
+      secEdgarAudit = await secEdgarAdapter.checkRecent8K(symbol);
+      hasOfficialFiling = secEdgarAudit.hasRecent8K;
+    }
+
     const eventConfig: SimulationEventConfig = {
       event: {
         id: `custom-shock-${Date.now()}`,
@@ -245,7 +278,7 @@ export function buildServer() {
         affectedSymbol: symbol,
         sentiment: b.sentiment ?? 'BULLISH',
         rawUrgency: b.rawUrgency ?? 0.85,
-        hasOfficialFiling: b.hasOfficialFiling ?? false,
+        hasOfficialFiling,
       },
       referenceTime,
       mondayOpenPrice: b.mondayOpenPrice ?? 4.12,
@@ -253,6 +286,9 @@ export function buildServer() {
     };
 
     const comparison = await simulationRunner.evaluateSingle(eventConfig);
+    if (secEdgarAudit) {
+      (comparison as any).secEdgarAudit = secEdgarAudit;
+    }
 
     // Record to paper log
     globalPaperLogs.unshift({
@@ -266,6 +302,7 @@ export function buildServer() {
         action: comparison.daybreak.decision.action,
         sizeUsd: comparison.daybreak.decision.sizeUsd,
         refusalReceipt: comparison.daybreak.decision.refusalReceipt,
+        secEdgarAudit,
       },
       voteOutcome: comparison.daybreak.decision.action === 'REFUSE' ? 'REJECTED' : 'PASSED',
       metrics: {

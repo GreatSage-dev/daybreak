@@ -72,6 +72,7 @@ export const ShockInjectorModal: React.FC<ShockInjectorModalProps> = ({
   const [deltaHours, setDeltaHours] = useState(20);
   const [hasOfficialFiling, setHasOfficialFiling] = useState(false);
   const [sentiment, setSentiment] = useState<'BULLISH' | 'BEARISH' | 'NEUTRAL'>('BULLISH');
+  const [verifyWithSecEdgar, setVerifyWithSecEdgar] = useState(true);
   const [sizeUsd, setSizeUsd] = useState(10000);
   const [mondayOpenPrice, setMondayOpenPrice] = useState(4.12);
   const [loading, setLoading] = useState(false);
@@ -100,6 +101,7 @@ export const ShockInjectorModal: React.FC<ShockInjectorModalProps> = ({
         headline,
         deltaHours,
         hasOfficialFiling,
+        verifyWithSecEdgar,
         sentiment,
         baseSizeUsd: sizeUsd,
         mondayOpenPrice,
@@ -249,6 +251,30 @@ export const ShockInjectorModal: React.FC<ShockInjectorModalProps> = ({
                   className="w-full bg-surface border border-edge rounded-lg p-2.5 text-sm font-mono text-ink focus:border-accent outline-none"
                 />
               </div>
+            </div>
+
+            {/* Live SEC EDGAR Verification Toggle */}
+            <div className="p-3 rounded-xl bg-surface border border-edge flex items-center justify-between">
+              <div>
+                <span className="text-xs font-mono font-bold text-ink block flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-trust-a animate-pulse" />
+                  Live SEC EDGAR API Verification
+                </span>
+                <span className="text-[11px] text-ink-muted">
+                  Query data.sec.gov in real time for authentic CIK 8-K filings
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setVerifyWithSecEdgar(!verifyWithSecEdgar)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all ${
+                  verifyWithSecEdgar
+                    ? 'bg-trust-a text-surface'
+                    : 'bg-surface-raised border border-edge text-ink-muted'
+                }`}
+              >
+                {verifyWithSecEdgar ? 'ENABLED (LIVE)' : 'OFF (MANUAL)'}
+              </button>
             </div>
 
             {error && (

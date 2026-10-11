@@ -56,6 +56,20 @@ export interface TrustCurveResponse {
   points: TrustCurvePoint[];
 }
 
+export interface RefusalReceiptDetail {
+  receiptId: string;
+  timestamp?: number;
+  symbol?: string;
+  attemptedAction?: string;
+  attemptedSizeUsd?: number;
+  trustGrade?: string;
+  trustScore?: number;
+  triggeredForbiddenState: string;
+  rejectionReason: string;
+  estimatedMondayReversionBps: number;
+  estimatedCapitalPreservedUsd: number;
+}
+
 export interface AgentDecision {
   tradeId: string;
   timestamp: number;
@@ -69,13 +83,8 @@ export interface AgentDecision {
   reason: string;
   basisPointsSaved: number;
   mondayRiskProtectionUsd: number;
-  refusalReceipt?: {
-    receiptId: string;
-    rejectionReason: string;
-    estimatedMondayReversionBps: number;
-    estimatedCapitalPreservedUsd: number;
-    triggeredForbiddenState: string;
-  };
+  refusalReceipt?: RefusalReceiptDetail;
+  forbiddenStateDetected?: string;
 }
 
 export interface SimulationComparison {
@@ -169,6 +178,38 @@ export interface SystemStatusResponse {
   };
 }
 
+export interface ScenarioItem {
+  event: {
+    id: string;
+    timestamp: number;
+    headline: string;
+    affectedSymbol: string;
+    sentiment: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+    rawUrgency: number;
+    hasOfficialFiling?: boolean;
+  };
+  referenceTime: number;
+  mondayOpenPrice: number;
+  baseSizeUsd?: number;
+}
+
+export interface ScenariosResponse {
+  count: number;
+  scenarios: ScenarioItem[];
+  benchmarkCount: number;
+}
+
+export interface EvaluateEventRequest {
+  symbol: string;
+  headline?: string;
+  sentiment?: 'BULLISH' | 'BEARISH' | 'NEUTRAL';
+  rawUrgency?: number;
+  hasOfficialFiling?: boolean;
+  baseSizeUsd?: number;
+  deltaHours?: number;
+  mondayOpenPrice?: number;
+}
+
 async function request<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${url}`, options);
   if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
@@ -179,8 +220,19 @@ export const api = {
   health: () => request<HealthResponse>('/health'),
   systemStatus: () => request<SystemStatusResponse>('/system-status'),
   tokens: () => request<TokensResponse>('/tokens'),
+  scenarios: () => request<ScenariosResponse>('/scenarios'),
   trustCurve: (symbol: string) => request<TrustCurveResponse>(`/trust-curve/${symbol}`),
-  simulate: () => request<SimulationResult>('/simulate', { method: 'POST' }),
+  simulate: (options?: { dataset?: 'benchmark' | 'extended' }) =>
+    request<SimulationResult>('/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options ?? { dataset: 'extended' }),
+    }),
+  evaluateEvent: (eventReq: EvaluateEventRequest) =>
+    request<SimulationComparison>('/evaluate-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(eventReq),
+    }),
   paperLog: () => request<PaperLogResponse>('/paper-log'),
 };
-

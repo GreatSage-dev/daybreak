@@ -31,7 +31,7 @@ To ensure total transparency for hackathon evaluation:
 | **Web Console & Landing Page** | **Live Production** | Interactive UI deployed on Vercel with real-time telemetry, charts, and simulation views (`https://daybreak-up.vercel.app`) |
 | **Bitget V2 Demo Client** | **Functional Adapter** | HMAC-SHA256 authenticated REST client targeting `api.bitget.com` with `papertrading: 1` (`src/adapters/bitget-testnet.ts`) |
 | **Bitget MCP & Signals** | **Adapter Layer** | Interfaces with Bitget stock MCP schema and signal formats, with offline fixture fallback (`src/adapters/bitget-mcp.ts`) |
-| **Weekend Market Shocks** | **Authored Scenarios** | 5 authored stress scenarios (AMC churn, NVDA drift, TSLA rumor, AAPL quiet, MSTR dump) used to benchmark Daybreak against an illustrative baseline |
+| **Weekend Market Shocks** | **Authored Scenarios** | 18 continuous weekend stress scenarios spanning Friday close to Monday open, plus interactive sandbox shock injector (`src/agent/simulation-runner.ts`) |
 | **SEC 8-K Regulatory Check** | **Prototype Metadata** | Evaluates `hasFiling` / `secFilingVerified` flags on event payloads (live SEC EDGAR scraping is on the post-hackathon roadmap) |
 
 ---

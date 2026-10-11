@@ -38,3 +38,6 @@ lerna-debug.log*
 # Testing coverage
 coverage/
 .nyc_output/
+
+# Media binaries
+*.mp4
